@@ -89,12 +89,18 @@
 
     /* ---------- FAQ ---------- */
     .faq-body {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows .3s ease;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
     }
-    .faq-body.open { grid-template-rows: 1fr; }
-    .faq-inner { overflow: hidden; }
+    .faq-body.open { max-height: 240px; }
+    .faq-inner { padding-bottom: 1.25rem; }
+
+    .faq-btn { transition: background .2s; }
+    .faq-btn:hover { background: rgba(124,58,237,.08) !important; }
+    .faq-btn[aria-expanded="true"] { background: rgba(124,58,237,.1) !important; }
+    .faq-icon { transition: transform .35s ease, color .2s; }
+    .faq-btn[aria-expanded="true"] .faq-icon { color: var(--primary-lt); }
 
     /* ---------- Screenshot carousel ---------- */
     .slides { display: flex; transition: transform .4s ease; }
@@ -609,7 +615,7 @@
       <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
       <span>Open Source · MIT License</span>
       <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
-      <span>Chrome · Edge · Brave · Firefox</span>
+      <span>Chrome · Edge · Brave · Opera</span>
     </div>
 
     <!-- Cards -->
@@ -669,7 +675,7 @@
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border);">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Is Digital Zen free?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
           <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes, completely free and open-source under the MIT license.</div>
@@ -679,17 +685,17 @@
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.05s;">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Which browsers are supported?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
-          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Chrome, Edge, Brave, Opera, Vivaldi, and all Chromium-based browsers. Firefox support is also available.</div>
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Chrome, Edge, Brave, Opera, Vivaldi, and all Chromium-based browsers.</div>
         </div>
       </div>
 
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.1s;">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Does it track my browsing?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
           <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">No. All data stays in your browser. Nothing is sent to any server.</div>
@@ -699,7 +705,7 @@
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.15s;">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Can I bypass the block?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
           <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">In Warn mode, yes — you can dismiss the warning. In Block mode, the tab is closed immediately.</div>
@@ -709,7 +715,7 @@
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.2s;">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Does it work offline?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
           <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. Digital Zen works entirely offline with no internet connection required.</div>
@@ -719,7 +725,7 @@
       <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.25s;">
         <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
           <span class="font-medium text-white pr-4">Can I import / export my settings?</span>
-          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
         </button>
         <div class="faq-body" style="background:var(--surface);">
           <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. You can export a full JSON backup and restore it anytime.</div>
