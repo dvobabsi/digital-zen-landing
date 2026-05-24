@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Zen — Website Blocker &amp; Pomodoro Timer for Chrome</title>
+  <meta name="description" content="Digital Zen helps you stay focused by blocking distracting websites on a schedule and managing work sessions with a built-in Pomodoro timer. Free Chrome extension.">
+  <meta name="keywords" content="website blocker chrome, focus extension, pomodoro timer chrome extension, block distracting websites, productivity chrome extension, site blocker for work, block social media chrome">
+  <meta property="og:title" content="Digital Zen — Block Distractions. Focus Deeply.">
+  <meta property="og:description" content="Free Chrome extension that blocks distracting sites on a schedule and includes a Pomodoro timer. No account required.">
+  <link rel="canonical" href="https://your-domain.com">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,600;12..60,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dz-bg':      '#0f0d16',
+            'dz-surface': '#1a1625',
+            'dz-primary': '#7c3aed',
+            'dz-light':   '#a78bfa',
+          },
+          fontFamily: {
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg:           #0f0d16;
+      --surface:      #1a1625;
+      --surface-2:    rgba(255,255,255,0.04);
+      --border:       rgba(124,58,237,0.2);
+      --primary:      #7c3aed;
+      --primary-lt:   #a78bfa;
+      --glow:         rgba(124,58,237,0.35);
+      --text:         #f8fafc;
+      --muted:        #94a3b8;
+      --hint:         #64748b;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+
+    /* ---------- Animations ---------- */
+    @keyframes ctaPulse {
+      0%,100% { box-shadow: 0 0 0 0 var(--glow); }
+      50%      { box-shadow: 0 0 0 18px rgba(124,58,237,0); }
+    }
+    .btn-pulse { animation: ctaPulse 2s ease-in-out 3; }
+
+    @keyframes breathe {
+      from { transform: scale(1.0); }
+      to   { transform: scale(1.04); }
+    }
+    .blob { animation: breathe 4s ease-in-out infinite alternate; }
+
+    @keyframes ringDraw {
+      from { stroke-dashoffset: 1005; }
+      to   { stroke-dashoffset: 352; } /* ~65% of 1005 */
+    }
+    .ring-anim {
+      stroke-dasharray: 1005;
+      stroke-dashoffset: 1005;
+      animation: ringDraw 3s ease-in-out 0.6s forwards;
+    }
+
+    /* ---------- Scroll reveal ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- Card hover ---------- */
+    .card-hover { transition: transform .2s, border-color .2s; }
+    .card-hover:hover { transform: translateY(-3px); border-color: rgba(124,58,237,.5) !important; }
+
+    /* ---------- FAQ ---------- */
+    .faq-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .3s ease;
+    }
+    .faq-body.open { grid-template-rows: 1fr; }
+    .faq-inner { overflow: hidden; }
+
+    /* ---------- Screenshot carousel ---------- */
+    .slides { display: flex; transition: transform .4s ease; }
+    .slide  { flex: 0 0 100%; }
+
+    /* ---------- Focus visible ---------- */
+    *:focus-visible { outline: 2px solid var(--primary-lt); outline-offset: 2px; }
+
+    /* ---------- Scrollbar ---------- */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+  </style>
+</head>
+
+<body class="font-body antialiased">
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
+<header id="site-header"
+  class="fixed inset-x-0 top-0 z-50 h-16 flex items-center transition-all duration-300"
+  style="background:rgba(15,13,22,.85);">
+  <div class="max-w-7xl mx-auto w-full px-5 lg:px-8 flex items-center justify-between gap-6">
+
+    <!-- Logo -->
+    <a href="#" aria-label="Digital Zen home" class="flex items-center gap-2.5 shrink-0">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--primary);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <span class="font-display font-bold text-[17px] text-white">Digital Zen</span>
+    </a>
+
+    <!-- Nav (desktop) -->
+    <nav class="hidden md:flex items-center gap-7" aria-label="Main navigation">
+      <a href="#features"     class="text-sm text-slate-400 hover:text-white transition-colors">Features</a>
+      <a href="#how"          class="text-sm text-slate-400 hover:text-white transition-colors">How it works</a>
+      <a href="#faq"          class="text-sm text-slate-400 hover:text-white transition-colors">FAQ</a>
+    </nav>
+
+    <!-- CTA -->
+    <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+       target="_blank" rel="noopener"
+       class="hidden sm:flex items-center gap-2 text-sm font-semibold text-white px-4 py-2 rounded-xl transition-colors"
+       style="background:var(--primary);"
+       onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+      <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" class="shrink-0">
+        <circle cx="12" cy="12" r="10" fill="#4285f4"/>
+        <circle cx="12" cy="12" r="4"  fill="white"/>
+        <path d="M12 8h8.2A10 10 0 0 0 3.8 8z"          fill="#ea4335"/>
+        <path d="M12 8h8.2A10 10 0 0 1 16.7 20l-4.9-8.5" fill="#fbbc05"/>
+        <path d="M3.8 8A10 10 0 0 0 7.3 20l4.5-7.8"      fill="#34a853"/>
+      </svg>
+      Add to Chrome — Free
+    </a>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section id="hero" class="min-h-screen flex items-center pt-16 overflow-hidden">
+  <div class="max-w-7xl mx-auto w-full px-5 lg:px-8 py-20">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- ── Text ── -->
+      <div class="reveal">
+        <!-- Eyebrow -->
+        <div class="inline-flex items-center gap-2 text-sm font-medium mb-6 px-3 py-1 rounded-full"
+             style="color:var(--primary-lt); background:var(--surface-2); border:1px solid var(--border);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Focus Extension for Chrome
+        </div>
+
+        <h1 class="font-display font-bold text-5xl lg:text-6xl xl:text-[68px] leading-[1.08] text-white mb-6">
+          Block Distractions.<br>
+          <span style="color:var(--primary-lt);">Focus Deeply.</span>
+        </h1>
+
+        <p class="text-lg leading-relaxed mb-8 max-w-[480px]" style="color:var(--muted);">
+          Digital Zen blocks distracting websites on a schedule and structures your day with a built-in Pomodoro timer.
+        </p>
+
+        <!-- CTA -->
+        <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+           target="_blank" rel="noopener" id="hero-cta"
+           class="btn-pulse inline-flex items-center gap-3 text-white font-semibold text-base px-7 py-4 rounded-xl transition-colors mb-3"
+           style="background:var(--primary);"
+           onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="shrink-0">
+            <circle cx="12" cy="12" r="10" fill="#4285f4"/>
+            <circle cx="12" cy="12" r="4"  fill="white"/>
+            <path d="M12 8h8.2A10 10 0 0 0 3.8 8z"          fill="#ea4335"/>
+            <path d="M12 8h8.2A10 10 0 0 1 16.7 20l-4.9-8.5" fill="#fbbc05"/>
+            <path d="M3.8 8A10 10 0 0 0 7.3 20l4.5-7.8"      fill="#34a853"/>
+          </svg>
+          Add to Chrome — It's Free
+        </a>
+
+        <p class="text-sm mb-8" style="color:var(--hint);">Free · No account · Works offline</p>
+
+        <!-- Browser icons -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="text-xs mr-1" style="color:var(--hint);">Also on</span>
+          <!-- Chrome -->
+          <svg width="22" height="22" viewBox="0 0 100 100" opacity=".55" aria-label="Chrome"><circle cx="50" cy="50" r="50" fill="#4285f4"/><circle cx="50" cy="50" r="20" fill="white"/><path d="M50 30h43A50 50 0 0 0 7 30z" fill="#ea4335"/><path d="M50 30h43A50 50 0 0 1 73.3 90L50 50" fill="#fbbc05"/><path d="M7 30A50 50 0 0 0 26.7 90L50 50" fill="#34a853"/></svg>
+          <!-- Edge -->
+          <svg width="22" height="22" viewBox="0 0 24 24" opacity=".55" aria-label="Edge" fill="none"><path d="M3 12C3 7.03 7.03 3 12 3s9 4.03 9 9-4.03 9-9 9S3 16.97 3 12z" fill="#0078d4"/><path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0z" fill="white"/><path d="M12 8h9.4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <!-- Brave -->
+          <svg width="22" height="22" viewBox="0 0 24 24" opacity=".55" aria-label="Brave" fill="none"><path d="M12 2 4.5 5.5v6C4.5 16.05 7.8 20.4 12 22c4.2-1.6 7.5-5.95 7.5-10.5v-6L12 2z" fill="#fb542b"/><path d="M10 13l2 2 2-2M9 10h6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <!-- Firefox -->
+          <svg width="22" height="22" viewBox="0 0 24 24" opacity=".55" aria-label="Firefox" fill="none"><circle cx="12" cy="12" r="10" fill="#ff6611"/><path d="M17 8c-1-2-3-3-5-3-3.3 0-6 2.7-6 6s2.7 6 6 6c2.2 0 4.1-1.2 5.2-3" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+          <!-- Opera -->
+          <svg width="22" height="22" viewBox="0 0 24 24" opacity=".55" aria-label="Opera" fill="none"><circle cx="12" cy="12" r="10" fill="#ff1b2d"/><ellipse cx="12" cy="12" rx="4" ry="6" stroke="white" stroke-width="1.4"/></svg>
+        </div>
+      </div>
+
+      <!-- ── Visual ── -->
+      <div class="relative flex items-center justify-center reveal" style="transition-delay:.2s;">
+        <!-- Glow blob -->
+        <div class="blob absolute w-80 h-80 rounded-full pointer-events-none"
+             style="background:radial-gradient(circle,rgba(124,58,237,.45) 0%,transparent 70%); filter:blur(48px);"></div>
+
+        <!-- Ring -->
+        <svg class="absolute" width="360" height="360" viewBox="0 0 360 360" fill="none" aria-hidden="true">
+          <circle cx="180" cy="180" r="160" stroke="rgba(124,58,237,.08)" stroke-width="2"/>
+          <circle class="ring-anim" cx="180" cy="180" r="160"
+                  stroke="url(#rg)" stroke-width="3" stroke-linecap="round"
+                  transform="rotate(-90 180 180)"/>
+          <defs>
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#a78bfa"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- Extension mock -->
+        <div class="relative w-56 rounded-2xl overflow-hidden shadow-2xl border"
+             style="background:var(--surface); border-color:var(--border);">
+          <div class="p-5">
+            <!-- Header -->
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--primary);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <span class="text-sm font-semibold text-white">Digital Zen</span>
+            </div>
+
+            <!-- Session active -->
+            <div class="text-center mb-4">
+              <div class="text-xs mb-1" style="color:var(--hint);">Session active</div>
+              <div class="font-display font-bold text-3xl text-white mb-3">23:45</div>
+              <div class="h-1.5 rounded-full mb-2" style="background:var(--surface-2);">
+                <div class="h-full rounded-full" style="width:75%; background:linear-gradient(90deg,var(--primary),var(--primary-lt));"></div>
+              </div>
+              <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(251,191,36,.15); color:#fbbf24;">⚠️ Warn Mode</span>
+            </div>
+
+            <!-- Blocked -->
+            <div class="space-y-1.5">
+              <div class="text-xs mb-1" style="color:var(--hint);">Blocking now:</div>
+              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>instagram.com</div>
+              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>youtube.com</div>
+              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>tiktok.com</div>
+              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>reddit.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PAIN POINTS
+═══════════════════════════════════════════════════════ -->
+<section id="pain" class="py-24" style="background:var(--surface);">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Sound Familiar?</h2>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border);">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="clock" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Open the browser "for a second" — lose 40 minutes</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.1s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="trending-down" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Workday ends, the main task still isn't done</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.2s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="zap-off" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Every interruption breaks your flow for 20 minutes</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.3s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="settings" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Tried focus apps — too complicated to set up</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SOLUTION
+═══════════════════════════════════════════════════════ -->
+<section id="solution" class="py-24">
+  <div class="max-w-3xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl text-white mb-5 reveal">
+      Meet Digital Zen —<br>Your Browser Focus Guard
+    </h2>
+    <p class="text-lg leading-relaxed mb-10 reveal" style="color:var(--muted); transition-delay:.1s;">
+      Set which sites to block and when — then just work. The built-in Pomodoro timer helps you alternate focus and rest without thinking about it.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-3 reveal" style="transition-delay:.2s;">
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">🚫 Smart Blocking</span>
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">📅 Custom Schedules</span>
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">🍅 Pomodoro Timer</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FEATURES  (4 alternating blocks)
+═══════════════════════════════════════════════════════ -->
+<section id="features" class="py-8">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 space-y-28">
+
+    <!-- ── Feature 1 ── Flexible Schedules -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Visual left -->
+      <div class="order-2 lg:order-1 rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
+        <div class="text-xs uppercase tracking-widest mb-4" style="color:var(--hint);">Focus Periods</div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div>
+              <div class="text-sm font-medium text-white">Work Morning</div>
+              <div class="text-xs mt-0.5" style="color:var(--muted);">Mon–Fri · 09:00–12:00</div>
+            </div>
+            <div class="w-10 h-5 rounded-full relative" style="background:var(--primary);">
+              <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div>
+              <div class="text-sm font-medium text-white">Deep Work</div>
+              <div class="text-xs mt-0.5" style="color:var(--muted);">Mon–Fri · 14:00–17:00</div>
+            </div>
+            <div class="w-10 h-5 rounded-full relative" style="background:var(--primary);">
+              <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div>
+              <div class="text-sm font-medium text-white">Weekend Study</div>
+              <div class="text-xs mt-0.5" style="color:var(--muted);">Sat–Sun · 10:00–13:00</div>
+            </div>
+            <div class="w-10 h-5 rounded-full relative" style="background:rgba(255,255,255,.1);">
+              <div class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full shadow" style="background:#64748b;"></div>
+            </div>
+          </div>
+          <button class="w-full mt-2 py-2.5 rounded-xl text-sm font-medium text-white border border-dashed transition-colors" style="border-color:var(--border);">+ Add period</button>
+        </div>
+      </div>
+      <!-- Text right -->
+      <div class="order-1 lg:order-2">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="calendar-days" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Block sites automatically, on your schedule</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Create focus periods for any time range and any days of the week. Morning routine, work hours, study time — Digital Zen enforces the schedule so you don't have to.</p>
+      </div>
+    </div>
+
+    <!-- ── Feature 2 ── 3 Blocking Modes -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Text left -->
+      <div>
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="shield-check" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Block, warn, or whitelist — you choose</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Full block closes the tab instantly. Warning mode shows a reminder you can dismiss. Whitelist mode lets only your approved sites through — everything else is blocked.</p>
+      </div>
+      <!-- Visual right -->
+      <div class="rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
+        <div class="text-xs uppercase tracking-widest mb-5" style="color:var(--hint);">Blocking Mode</div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.25);">
+            <div class="text-3xl mb-2">🚫</div>
+            <div class="text-sm font-semibold text-white mb-1">Block</div>
+            <div class="text-xs" style="color:var(--muted);">Tab closes instantly</div>
+          </div>
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(251,191,36,.08); border-color:rgba(251,191,36,.25);">
+            <div class="text-3xl mb-2">⚠️</div>
+            <div class="text-sm font-semibold text-white mb-1">Warn</div>
+            <div class="text-xs" style="color:var(--muted);">Gentle reminder</div>
+          </div>
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.25);">
+            <div class="text-3xl mb-2">✅</div>
+            <div class="text-sm font-semibold text-white mb-1">Allow</div>
+            <div class="text-xs" style="color:var(--muted);">Whitelist only</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Feature 3 ── Pomodoro -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Visual left -->
+      <div class="order-2 lg:order-1 rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
+        <div class="text-xs uppercase tracking-widest mb-5" style="color:var(--hint);">Pomodoro Timer</div>
+        <div class="flex flex-col items-center">
+          <!-- Ring -->
+          <div class="relative w-36 h-36 mb-5">
+            <svg width="144" height="144" viewBox="0 0 144 144">
+              <circle cx="72" cy="72" r="62" stroke="rgba(124,58,237,.12)" stroke-width="8" fill="none"/>
+              <circle cx="72" cy="72" r="62" stroke="var(--primary)" stroke-width="8" fill="none"
+                      stroke-dasharray="390" stroke-dashoffset="117" stroke-linecap="round"
+                      transform="rotate(-90 72 72)"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="font-display font-bold text-2xl text-white">18:30</div>
+              <div class="text-xs" style="color:var(--muted);">Focus</div>
+            </div>
+          </div>
+
+          <div class="flex gap-5 text-xs mb-4" style="color:var(--muted);">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:var(--primary);"></span>Focus 25m</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Break 5m</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span>Long 15m</span>
+          </div>
+
+          <div class="flex gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:var(--primary);"></span>
+            <span class="w-2.5 h-2.5 rounded-full" style="background:var(--primary);"></span>
+            <span class="w-2.5 h-2.5 rounded-full" style="background:rgba(255,255,255,.15);"></span>
+            <span class="w-2.5 h-2.5 rounded-full" style="background:rgba(255,255,255,.15);"></span>
+          </div>
+          <div class="text-xs mt-2" style="color:var(--hint);">Session 2 of 4 · Long break soon</div>
+        </div>
+      </div>
+      <!-- Text right -->
+      <div class="order-1 lg:order-2">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="timer" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Structure your day, session by session</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Work, short break, long break — all configurable. The visual progress ring and browser notifications keep you on track without breaking your concentration.</p>
+      </div>
+    </div>
+
+    <!-- ── Feature 4 ── 100+ Sites -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Text left -->
+      <div>
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="library" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">All the distracting sites, already in the list</h3>
+        <p class="text-lg leading-relaxed mb-5" style="color:var(--muted);">Instagram, TikTok, Reddit, Netflix, YouTube and 100+ more are pre-organized into folders. Toggle entire categories on or off in one click.</p>
+        <div class="inline-flex items-center gap-2 text-sm font-medium" style="color:var(--primary-lt);">
+          <i data-lucide="check-circle-2" style="width:16px;height:16px;"></i>
+          100+ sites pre-loaded out of the box
+        </div>
+      </div>
+      <!-- Visual right -->
+      <div class="rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
+        <div class="text-xs uppercase tracking-widest mb-4" style="color:var(--hint);">Site Library</div>
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">📱</span>
+              <div>
+                <div class="text-sm font-medium text-white">Social Media</div>
+                <div class="text-xs" style="color:var(--muted);">Instagram, TikTok, Twitter +12</div>
+              </div>
+            </div>
+            <div class="w-9 h-5 rounded-full shrink-0" style="background:var(--primary);"></div>
+          </div>
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🎬</span>
+              <div>
+                <div class="text-sm font-medium text-white">Video &amp; Streaming</div>
+                <div class="text-xs" style="color:var(--muted);">YouTube, Netflix, Twitch +8</div>
+              </div>
+            </div>
+            <div class="w-9 h-5 rounded-full shrink-0" style="background:var(--primary);"></div>
+          </div>
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">💬</span>
+              <div>
+                <div class="text-sm font-medium text-white">News &amp; Forums</div>
+                <div class="text-xs" style="color:var(--muted);">Reddit, HackerNews +15</div>
+              </div>
+            </div>
+            <div class="w-9 h-5 rounded-full shrink-0" style="background:rgba(255,255,255,.1);"></div>
+          </div>
+          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🎮</span>
+              <div>
+                <div class="text-sm font-medium text-white">Gaming</div>
+                <div class="text-xs" style="color:var(--muted);">Steam, Twitch games +6</div>
+              </div>
+            </div>
+            <div class="w-9 h-5 rounded-full shrink-0" style="background:rgba(255,255,255,.1);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════════════ -->
+<section id="how" class="py-24" style="background:var(--surface);">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl text-white mb-16 reveal">Up and Running in 3 Steps</h2>
+
+    <div class="grid md:grid-cols-3 gap-8 reveal">
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="download" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">1</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Install the extension</h3>
+        <p style="color:var(--muted);">Click "Add to Chrome" — takes 10 seconds</p>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="list-checks" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">2</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Choose sites &amp; schedule</h3>
+        <p style="color:var(--muted);">Pick which sites to block and when</p>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="play-circle" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">3</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Start your focus session</h3>
+        <p style="color:var(--muted);">Hit the toggle and get to work</p>
+      </div>
+
+    </div>
+
+    <div class="mt-12 reveal" style="transition-delay:.15s;">
+      <p class="mb-6" style="color:var(--muted);">Setup takes 2 minutes. No account required.</p>
+      <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 font-semibold text-white px-6 py-3 rounded-xl border transition-all"
+         style="border-color:var(--primary);"
+         onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background=''">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="white"/><path d="M12 8h8.2A10 10 0 0 0 3.8 8z" fill="#ea4335"/><path d="M12 8h8.2A10 10 0 0 1 16.7 20l-4.9-8.5" fill="#fbbc05"/><path d="M3.8 8A10 10 0 0 0 7.3 20l4.5-7.8" fill="#34a853"/></svg>
+        Add to Chrome — Free
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREENSHOTS
+═══════════════════════════════════════════════════════ -->
+<section id="screenshots" class="py-24">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Digital Zen in Action</h2>
+
+    <div class="reveal">
+      <div class="rounded-2xl overflow-hidden border" style="border-color:var(--border);">
+        <div class="slides" id="slides">
+
+          <!-- Slide 1 -->
+          <div class="slide p-10 flex flex-col items-center" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest mb-6" style="color:var(--hint);">Focus Screen — Warn Mode</div>
+            <div class="w-52 rounded-2xl border p-5 flex flex-col items-center" style="background:var(--bg); border-color:var(--border);">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3 border" style="border-color:var(--primary);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-lt)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="text-xs mb-1" style="color:var(--hint);">Session active</div>
+              <div class="font-display font-bold text-3xl text-white mb-3">23:45</div>
+              <div class="w-full h-1.5 rounded-full mb-3" style="background:var(--surface-2);">
+                <div class="h-full rounded-full w-3/4" style="background:var(--primary);"></div>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(251,191,36,.15); color:#fbbf24;">⚠️ Warn Mode Active</span>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="slide p-10 flex flex-col items-center" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest mb-6" style="color:var(--hint);">Pomodoro Screen — Running</div>
+            <div class="w-52 rounded-2xl border p-5 flex flex-col items-center" style="background:var(--bg); border-color:var(--border);">
+              <div class="relative w-28 h-28 mb-4">
+                <svg width="112" height="112" viewBox="0 0 112 112">
+                  <circle cx="56" cy="56" r="48" stroke="rgba(124,58,237,.15)" stroke-width="7" fill="none"/>
+                  <circle cx="56" cy="56" r="48" stroke="var(--primary)" stroke-width="7" fill="none"
+                          stroke-dasharray="302" stroke-dashoffset="91" stroke-linecap="round"
+                          transform="rotate(-90 56 56)"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <div class="font-display font-bold text-xl text-white">18:30</div>
+                  <div class="text-xs" style="color:var(--muted);">Focus</div>
+                </div>
+              </div>
+              <div class="flex gap-1.5 mb-2">
+                <span class="w-2 h-2 rounded-full" style="background:var(--primary);"></span>
+                <span class="w-2 h-2 rounded-full" style="background:var(--primary);"></span>
+                <span class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.15);"></span>
+                <span class="w-2 h-2 rounded-full" style="background:rgba(255,255,255,.15);"></span>
+              </div>
+              <div class="text-xs" style="color:var(--hint);">Session 2 of 4</div>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="slide p-10 flex flex-col items-center" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest mb-6" style="color:var(--hint);">Period List — Multiple Periods</div>
+            <div class="w-64 rounded-2xl border p-4" style="background:var(--bg); border-color:var(--border);">
+              <div class="text-xs uppercase tracking-widest mb-3" style="color:var(--hint);">Your Periods</div>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between p-2.5 rounded-lg" style="background:var(--surface-2);">
+                  <span class="text-sm text-white">Work Morning</span>
+                  <div class="w-8 h-4 rounded-full" style="background:var(--primary);"></div>
+                </div>
+                <div class="flex items-center justify-between p-2.5 rounded-lg" style="background:var(--surface-2);">
+                  <span class="text-sm text-white">Deep Work</span>
+                  <div class="w-8 h-4 rounded-full" style="background:var(--primary);"></div>
+                </div>
+                <div class="flex items-center justify-between p-2.5 rounded-lg" style="background:var(--surface-2);">
+                  <span class="text-sm text-white">Evening Study</span>
+                  <div class="w-8 h-4 rounded-full" style="background:rgba(255,255,255,.1);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="slide p-10 flex flex-col items-center" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest mb-6" style="color:var(--hint);">Dark / Light Theme</div>
+            <div class="flex gap-5">
+              <div class="w-28 h-48 rounded-xl border p-3 flex flex-col gap-2" style="background:#0f0d16; border-color:var(--border);">
+                <div class="text-xs" style="color:var(--muted);">Dark</div>
+                <div class="h-2 rounded-full" style="background:var(--surface);"></div>
+                <div class="h-2 rounded-full w-3/4" style="background:var(--surface);"></div>
+                <div class="h-5 rounded-lg" style="background:var(--primary);"></div>
+                <div class="h-2 rounded-full" style="background:var(--surface);"></div>
+                <div class="h-2 rounded-full w-2/3" style="background:var(--surface);"></div>
+              </div>
+              <div class="w-28 h-48 rounded-xl border p-3 flex flex-col gap-2" style="background:#f8fafc; border-color:#e2e8f0;">
+                <div class="text-xs text-slate-500">Light</div>
+                <div class="h-2 rounded-full bg-slate-200"></div>
+                <div class="h-2 rounded-full w-3/4 bg-slate-200"></div>
+                <div class="h-5 rounded-lg" style="background:var(--primary);"></div>
+                <div class="h-2 rounded-full bg-slate-200"></div>
+                <div class="h-2 rounded-full w-2/3 bg-slate-200"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Dots -->
+      <div id="dots" class="flex items-center justify-center gap-2 mt-5"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════════════ -->
+<section id="testimonials" class="py-24" style="background:var(--surface);">
+  <div class="max-w-6xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-8 reveal">
+      Built for People Who Value Deep Work
+    </h2>
+
+    <!-- Trust bar -->
+    <div class="flex flex-wrap items-center justify-center gap-6 mb-16 text-sm reveal" style="color:var(--muted); transition-delay:.1s;">
+      <span class="flex items-center gap-2"><span class="text-amber-400">★★★★★</span> Chrome Web Store</span>
+      <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
+      <span>Open Source · MIT License</span>
+      <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
+      <span>Chrome · Edge · Brave · Firefox</span>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-5">
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border);">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:var(--primary);">DS</div>
+          <div>
+            <div class="font-semibold text-white text-sm">David S.</div>
+            <div class="text-xs" style="color:var(--muted);">Freelance Developer</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"Finally a focus extension that doesn't feel like bloatware. Installed, configured in 2 minutes, works perfectly."</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.1s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:linear-gradient(135deg,#7c3aed,#06b6d4);">MK</div>
+          <div>
+            <div class="font-semibold text-white text-sm">Maria K.</div>
+            <div class="text-xs" style="color:var(--muted);">UX Designer</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"The warning mode instead of full blocking is exactly what I needed — gentle nudge, not a wall."</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.2s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">AT</div>
+          <div>
+            <div class="font-semibold text-white text-sm">Alex T.</div>
+            <div class="text-xs" style="color:var(--muted);">CS Student</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"Pomodoro + site blocking in one tool. No more switching between apps."</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════════════ -->
+<section id="faq" class="py-24">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Frequently Asked Questions</h2>
+
+    <div class="grid md:grid-cols-2 gap-3">
+
+      <!-- FAQ items template -->
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border);">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Is Digital Zen free?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes, completely free and open-source under the MIT license.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.05s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Which browsers are supported?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Chrome, Edge, Brave, Opera, Vivaldi, and all Chromium-based browsers. Firefox support is also available.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.1s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Does it track my browsing?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">No. All data stays in your browser. Nothing is sent to any server.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.15s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Can I bypass the block?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">In Warn mode, yes — you can dismiss the warning. In Block mode, the tab is closed immediately.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.2s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Does it work offline?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. Digital Zen works entirely offline with no internet connection required.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.25s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Can I import / export my settings?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:18px; height:18px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. You can export a full JSON backup and restore it anytime.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FINAL CTA
+═══════════════════════════════════════════════════════ -->
+<section id="cta" class="py-28 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(124,58,237,.22) 0%, transparent 70%);"></div>
+
+  <div class="relative max-w-3xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl lg:text-5xl text-white mb-4 reveal">
+      Start Your First Focus Session Today
+    </h2>
+    <p class="text-lg mb-10 reveal" style="color:var(--muted); transition-delay:.1s;">
+      Free. No account. Works 30 seconds after install.
+    </p>
+    <div class="reveal" style="transition-delay:.2s;">
+      <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+         target="_blank" rel="noopener"
+         class="btn-pulse inline-flex items-center justify-center gap-3 text-white font-semibold text-lg px-10 py-4 rounded-xl w-full sm:w-auto transition-colors"
+         style="background:var(--primary);"
+         onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="white"/><path d="M12 8h8.2A10 10 0 0 0 3.8 8z" fill="#ea4335"/><path d="M12 8h8.2A10 10 0 0 1 16.7 20l-4.9-8.5" fill="#fbbc05"/><path d="M3.8 8A10 10 0 0 0 7.3 20l4.5-7.8" fill="#34a853"/></svg>
+        Install Digital Zen
+      </a>
+      <p class="text-sm mt-4" style="color:var(--hint);">★★★★★ · Chrome Web Store · Open Source · MIT</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer class="py-14 border-t" style="background:var(--surface); border-color:var(--border);">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="grid md:grid-cols-3 gap-10 mb-10">
+
+      <!-- Col 1 -->
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--primary);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="font-display font-bold text-[17px] text-white">Digital Zen</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">Block distractions. Focus deeply. Work better.</p>
+      </div>
+
+      <!-- Col 2 -->
+      <div>
+        <div class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--hint);">Links</div>
+        <div class="space-y-2.5">
+          <a href="https://github.com/DenHelloWorld" target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+             target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="white"/></svg>
+            Chrome Web Store
+          </a>
+          <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            MIT License
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 3 -->
+      <div>
+        <div class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--hint);">Built by</div>
+        <a href="https://github.com/DenHelloWorld" target="_blank" rel="noopener"
+           class="text-sm transition-colors hover:text-white" style="color:var(--muted);">
+          Denis Saveliev · github.com/DenHelloWorld
+        </a>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t text-center text-xs" style="border-color:var(--border); color:var(--hint);">
+      © 2025 Digital Zen · MIT License · All data stays in your browser
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MOBILE STICKY CTA
+═══════════════════════════════════════════════════════ -->
+<div id="mob-cta" class="sm:hidden fixed bottom-0 inset-x-0 z-40 p-3 border-t"
+     style="background:rgba(15,13,22,.95); border-color:var(--border); backdrop-filter:blur(16px);">
+  <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+     id="mob-cta-btn" target="_blank" rel="noopener"
+     class="flex items-center justify-center gap-2 w-full font-semibold text-white py-3.5 rounded-xl"
+     style="background:var(--primary);">
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="white"/><path d="M12 8h8.2A10 10 0 0 0 3.8 8z" fill="#ea4335"/><path d="M12 8h8.2A10 10 0 0 1 16.7 20l-4.9-8.5" fill="#fbbc05"/><path d="M3.8 8A10 10 0 0 0 7.3 20l4.5-7.8" fill="#34a853"/></svg>
+    Add to Chrome — Free
+  </a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  /* ── Init Lucide ── */
+  lucide.createIcons();
+
+  /* ── Sticky header ── */
+  const hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      hdr.style.borderBottom = '1px solid rgba(124,58,237,.15)';
+      hdr.style.backdropFilter = 'blur(20px)';
+    } else {
+      hdr.style.borderBottom = 'none';
+      hdr.style.backdropFilter = 'blur(0)';
+    }
+  }, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* Hero visible immediately */
+  setTimeout(() => {
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+  }, 80);
+
+  /* ── FAQ accordion ── */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn  = item.querySelector('.faq-btn');
+    const body = item.querySelector('.faq-body');
+    const icon = item.querySelector('.faq-icon');
+
+    btn.addEventListener('click', () => {
+      const open = body.classList.contains('open');
+
+      /* Close all */
+      document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = '');
+      document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+
+      if (!open) {
+        body.classList.add('open');
+        icon.style.transform = 'rotate(180deg)';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  /* ── Screenshot carousel ── */
+  const slidesEl = document.getElementById('slides');
+  const dotsEl   = document.getElementById('dots');
+  const TOTAL     = 4;
+  let cur = 0;
+
+  /* Build dots */
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('button');
+    d.setAttribute('aria-label', `Screenshot ${i + 1}`);
+    d.dataset.i = i;
+    d.className = 'rounded-full transition-all duration-300';
+    dotsEl.appendChild(d);
+    d.addEventListener('click', () => goTo(i));
+  }
+
+  function goTo(i) {
+    cur = i;
+    slidesEl.style.transform = `translateX(-${i * 100}%)`;
+    dotsEl.querySelectorAll('button').forEach((d, idx) => {
+      if (idx === i) {
+        d.style.cssText = 'width:22px; height:10px; background:var(--primary);';
+      } else {
+        d.style.cssText = 'width:8px; height:8px; background:rgba(255,255,255,.2);';
+      }
+    });
+  }
+  goTo(0);
+
+  const ticker = setInterval(() => goTo((cur + 1) % TOTAL), 4000);
+
+  /* Touch swipe */
+  let tx = 0;
+  slidesEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  slidesEl.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) { goTo(dx < 0 ? Math.min(cur + 1, TOTAL - 1) : Math.max(cur - 1, 0)); }
+  });
+
+  /* ── Mobile CTA hide after click ── */
+  const mobCta    = document.getElementById('mob-cta');
+  const mobCtaBtn = document.getElementById('mob-cta-btn');
+
+  if (localStorage.getItem('dz_cta')) mobCta.style.display = 'none';
+
+  mobCtaBtn.addEventListener('click', () => {
+    localStorage.setItem('dz_cta', '1');
+    setTimeout(() => { mobCta.style.display = 'none'; }, 800);
+  });
+
+  /* ── Smooth scroll ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+
+</body>
+</html>
