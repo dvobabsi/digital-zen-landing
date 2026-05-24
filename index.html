@@ -66,12 +66,12 @@
     .blob { animation: breathe 4s ease-in-out infinite alternate; }
 
     @keyframes ringDraw {
-      from { stroke-dashoffset: 1005; }
-      to   { stroke-dashoffset: 352; } /* ~65% of 1005 */
+      from { stroke-dashoffset: 1445; }
+      to   { stroke-dashoffset: 506; } /* ~65% of 1445 (r=230) */
     }
     .ring-anim {
-      stroke-dasharray: 1005;
-      stroke-dashoffset: 1005;
+      stroke-dasharray: 1445;
+      stroke-dashoffset: 1445;
       animation: ringDraw 3s ease-in-out 0.6s forwards;
     }
 
@@ -107,6 +107,17 @@
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+    /* ── Hero slider & ring — responsive sizing ── */
+    #hero-frame           { width: 290px; }   /* mobile +12% */
+    .hero-slide-height    { height: 445px; }
+    #hero-ring            { width: 380px; height: 380px; }
+
+    @media (min-width: 1024px) {
+      #hero-frame           { width: 360px; }  /* desktop +38% */
+      .hero-slide-height    { height: 545px; }
+      #hero-ring            { width: 500px; height: 500px; }
+    }
   </style>
 </head>
 
@@ -202,11 +213,11 @@
              style="background:radial-gradient(circle,rgba(124,58,237,.45) 0%,transparent 70%); filter:blur(48px);"></div>
 
         <!-- Ring -->
-        <svg class="absolute" width="360" height="360" viewBox="0 0 360 360" fill="none" aria-hidden="true">
-          <circle cx="180" cy="180" r="160" stroke="rgba(124,58,237,.08)" stroke-width="2"/>
-          <circle class="ring-anim" cx="180" cy="180" r="160"
+        <svg id="hero-ring" class="absolute" viewBox="0 0 500 500" fill="none" aria-hidden="true">
+          <circle cx="250" cy="250" r="230" stroke="rgba(124,58,237,.08)" stroke-width="2"/>
+          <circle class="ring-anim" cx="250" cy="250" r="230"
                   stroke="url(#rg)" stroke-width="3" stroke-linecap="round"
-                  transform="rotate(-90 180 180)"/>
+                  transform="rotate(-90 250 250)"/>
           <defs>
             <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%"   stop-color="#a78bfa"/>
@@ -215,36 +226,55 @@
           </defs>
         </svg>
 
-        <!-- Extension mock -->
-        <div class="relative w-56 rounded-2xl overflow-hidden shadow-2xl border"
-             style="background:var(--surface); border-color:var(--border);">
-          <div class="p-5">
-            <!-- Header -->
-            <div class="flex items-center gap-2 mb-4">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--primary);">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <!-- Extension mock — Hero slider -->
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl border" id="hero-frame"
+             style="background:var(--bg); border-color:var(--border); max-width:100%;">
+
+          <!-- Slide track -->
+          <div class="relative overflow-hidden hero-slide-height">
+            <div class="flex h-full" id="hero-track" style="transition:transform .5s cubic-bezier(.4,0,.2,1);">
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/screen-home.png" alt="Digital Zen — Focus screen"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
               </div>
-              <span class="text-sm font-semibold text-white">Digital Zen</span>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/screen-pomodoro.png" alt="Digital Zen — Pomodoro timer"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/set-hero.png" alt="Digital Zen — Schedule settings"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/web-hero.png" alt="Digital Zen — Site library"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
             </div>
 
-            <!-- Session active -->
-            <div class="text-center mb-4">
-              <div class="text-xs mb-1" style="color:var(--hint);">Session active</div>
-              <div class="font-display font-bold text-3xl text-white mb-3">23:45</div>
-              <div class="h-1.5 rounded-full mb-2" style="background:var(--surface-2);">
-                <div class="h-full rounded-full" style="width:75%; background:linear-gradient(90deg,var(--primary),var(--primary-lt));"></div>
-              </div>
-              <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(251,191,36,.15); color:#fbbf24;">⚠️ Warn Mode</span>
-            </div>
+            <!-- Prev -->
+            <button id="hero-prev" aria-label="Previous screenshot"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                    style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
 
-            <!-- Blocked -->
-            <div class="space-y-1.5">
-              <div class="text-xs mb-1" style="color:var(--hint);">Blocking now:</div>
-              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>instagram.com</div>
-              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>youtube.com</div>
-              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>tiktok.com</div>
-              <div class="flex items-center gap-2 text-xs" style="color:var(--muted);"><span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>reddit.com</div>
-            </div>
+            <!-- Next -->
+            <button id="hero-next" aria-label="Next screenshot"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                    style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Bottom bar -->
+          <div class="flex items-center justify-between px-4 py-3" style="border-top:1px solid var(--border);">
+            <span class="text-xs font-medium" id="hero-caption" style="color:var(--muted);">Focus screen</span>
+            <div class="flex items-center gap-1.5" id="hero-dots"></div>
           </div>
         </div>
       </div>
@@ -918,6 +948,81 @@
 <script>
   /* ── Init Lucide ── */
   lucide.createIcons();
+
+  /* ── Hero image slider ── */
+  (function () {
+    const track   = document.getElementById('hero-track');
+    const dotsEl  = document.getElementById('hero-dots');
+    const caption = document.getElementById('hero-caption');
+    const prevBtn = document.getElementById('hero-prev');
+    const nextBtn = document.getElementById('hero-next');
+    const frame   = document.getElementById('hero-frame');
+
+    const SLIDES = [
+      { label: 'Focus screen'      },
+      { label: 'Pomodoro timer'    },
+      { label: 'Schedule settings' },
+      { label: 'Site library'      },
+    ];
+    const N = SLIDES.length;
+    let cur = 0;
+    let timer;
+
+    /* Build dots */
+    SLIDES.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.setAttribute('aria-label', `Screenshot ${i + 1}`);
+      d.addEventListener('click', () => { goTo(i); restartTimer(); });
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(i) {
+      cur = ((i % N) + N) % N;
+      track.style.transform = `translateX(-${cur * 100}%)`;
+      caption.textContent = SLIDES[cur].label;
+      dotsEl.querySelectorAll('button').forEach((d, idx) => {
+        d.style.cssText = idx === cur
+          ? 'width:18px;height:7px;background:var(--primary);border-radius:9999px;transition:all .3s;'
+          : 'width:7px;height:7px;background:rgba(255,255,255,.2);border-radius:9999px;transition:all .3s;';
+      });
+    }
+
+    function restartTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(cur + 1), 3500);
+    }
+
+    goTo(0);
+    restartTimer();
+
+    prevBtn.addEventListener('click', () => { goTo(cur - 1); restartTimer(); });
+    nextBtn.addEventListener('click', () => { goTo(cur + 1); restartTimer(); });
+
+    /* Show/hide arrows on hover */
+    frame.addEventListener('mouseenter', () => {
+      prevBtn.style.opacity = '1';
+      nextBtn.style.opacity = '1';
+    });
+    frame.addEventListener('mouseleave', () => {
+      prevBtn.style.opacity = '0';
+      nextBtn.style.opacity = '0';
+    });
+
+    /* Touch swipe */
+    let tx = 0;
+    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 40) { goTo(dx < 0 ? cur + 1 : cur - 1); restartTimer(); }
+    });
+
+    /* Keyboard (when frame is focused) */
+    frame.setAttribute('tabindex', '0');
+    frame.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { goTo(cur - 1); restartTimer(); }
+      if (e.key === 'ArrowRight') { goTo(cur + 1); restartTimer(); }
+    });
+  })();
 
   /* ── Sticky header ── */
   const hdr = document.getElementById('site-header');
