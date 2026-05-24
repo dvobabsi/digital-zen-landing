@@ -112,11 +112,13 @@
     #hero-frame           { width: 290px; }   /* mobile +12% */
     .hero-slide-height    { height: 445px; }
     #hero-ring            { width: 380px; height: 380px; }
+    .period-slide-height  { height: 300px; }
 
     @media (min-width: 1024px) {
       #hero-frame           { width: 360px; }  /* desktop +38% */
       .hero-slide-height    { height: 545px; }
       #hero-ring            { width: 500px; height: 500px; }
+      .period-slide-height  { height: 380px; }
     }
   </style>
 </head>
@@ -354,38 +356,43 @@
 
     <!-- ── Feature 1 ── Flexible Schedules -->
     <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
-      <!-- Visual left -->
-      <div class="order-2 lg:order-1 rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
-        <div class="text-xs uppercase tracking-widest mb-4" style="color:var(--hint);">Focus Periods</div>
-        <div class="space-y-3">
-          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
-            <div>
-              <div class="text-sm font-medium text-white">Work Morning</div>
-              <div class="text-xs mt-0.5" style="color:var(--muted);">Mon–Fri · 09:00–12:00</div>
+      <!-- Visual left — Period slider -->
+      <div class="order-2 lg:order-1 rounded-2xl overflow-hidden border" id="period-frame"
+           style="background:var(--bg); border-color:var(--border);">
+
+        <div class="relative overflow-hidden period-slide-height">
+          <div class="flex h-full" id="period-track" style="transition:transform .5s cubic-bezier(.4,0,.2,1);">
+
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/001.png" alt="Digital Zen — Period list"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
             </div>
-            <div class="w-10 h-5 rounded-full relative" style="background:var(--primary);">
-              <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/002.png" alt="Digital Zen — Edit period"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
             </div>
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/003.png" alt="Digital Zen — Schedule view"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+            </div>
+
           </div>
-          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
-            <div>
-              <div class="text-sm font-medium text-white">Deep Work</div>
-              <div class="text-xs mt-0.5" style="color:var(--muted);">Mon–Fri · 14:00–17:00</div>
-            </div>
-            <div class="w-10 h-5 rounded-full relative" style="background:var(--primary);">
-              <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
-            </div>
-          </div>
-          <div class="flex items-center justify-between p-3.5 rounded-xl" style="background:var(--surface-2);">
-            <div>
-              <div class="text-sm font-medium text-white">Weekend Study</div>
-              <div class="text-xs mt-0.5" style="color:var(--muted);">Sat–Sun · 10:00–13:00</div>
-            </div>
-            <div class="w-10 h-5 rounded-full relative" style="background:rgba(255,255,255,.1);">
-              <div class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full shadow" style="background:#64748b;"></div>
-            </div>
-          </div>
-          <button class="w-full mt-2 py-2.5 rounded-xl text-sm font-medium text-white border border-dashed transition-colors" style="border-color:var(--border);">+ Add period</button>
+
+          <button id="period-prev" aria-label="Previous"
+                  class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                  style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button id="period-next" aria-label="Next"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                  style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between px-4 py-3" style="border-top:1px solid var(--border);">
+          <span class="text-xs font-medium" id="period-caption" style="color:var(--muted);">Period list</span>
+          <div class="flex items-center gap-1.5" id="period-dots"></div>
         </div>
       </div>
       <!-- Text right -->
@@ -949,37 +956,29 @@
   /* ── Init Lucide ── */
   lucide.createIcons();
 
-  /* ── Hero image slider ── */
-  (function () {
-    const track   = document.getElementById('hero-track');
-    const dotsEl  = document.getElementById('hero-dots');
-    const caption = document.getElementById('hero-caption');
-    const prevBtn = document.getElementById('hero-prev');
-    const nextBtn = document.getElementById('hero-next');
-    const frame   = document.getElementById('hero-frame');
+  /* ── Generic image slider ── */
+  function makeSlider(cfg) {
+    const track   = document.getElementById(cfg.trackId);
+    const dotsEl  = document.getElementById(cfg.dotsId);
+    const caption = document.getElementById(cfg.captionId);
+    const prevBtn = document.getElementById(cfg.prevId);
+    const nextBtn = document.getElementById(cfg.nextId);
+    const frame   = document.getElementById(cfg.frameId);
+    const slides  = cfg.slides;
+    const N       = slides.length;
+    let cur = 0, timer;
 
-    const SLIDES = [
-      { label: 'Focus screen'      },
-      { label: 'Pomodoro timer'    },
-      { label: 'Schedule settings' },
-      { label: 'Site library'      },
-    ];
-    const N = SLIDES.length;
-    let cur = 0;
-    let timer;
-
-    /* Build dots */
-    SLIDES.forEach((_, i) => {
+    slides.forEach((_, i) => {
       const d = document.createElement('button');
-      d.setAttribute('aria-label', `Screenshot ${i + 1}`);
-      d.addEventListener('click', () => { goTo(i); restartTimer(); });
+      d.setAttribute('aria-label', `Slide ${i + 1}`);
+      d.addEventListener('click', () => { goTo(i); restart(); });
       dotsEl.appendChild(d);
     });
 
     function goTo(i) {
       cur = ((i % N) + N) % N;
       track.style.transform = `translateX(-${cur * 100}%)`;
-      caption.textContent = SLIDES[cur].label;
+      if (caption) caption.textContent = slides[cur].label;
       dotsEl.querySelectorAll('button').forEach((d, idx) => {
         d.style.cssText = idx === cur
           ? 'width:18px;height:7px;background:var(--primary);border-radius:9999px;transition:all .3s;'
@@ -987,42 +986,56 @@
       });
     }
 
-    function restartTimer() {
+    function restart() {
       clearInterval(timer);
-      timer = setInterval(() => goTo(cur + 1), 3500);
+      timer = setInterval(() => goTo(cur + 1), cfg.interval || 3500);
     }
 
     goTo(0);
-    restartTimer();
+    restart();
 
-    prevBtn.addEventListener('click', () => { goTo(cur - 1); restartTimer(); });
-    nextBtn.addEventListener('click', () => { goTo(cur + 1); restartTimer(); });
+    prevBtn.addEventListener('click', () => { goTo(cur - 1); restart(); });
+    nextBtn.addEventListener('click', () => { goTo(cur + 1); restart(); });
 
-    /* Show/hide arrows on hover */
-    frame.addEventListener('mouseenter', () => {
-      prevBtn.style.opacity = '1';
-      nextBtn.style.opacity = '1';
-    });
-    frame.addEventListener('mouseleave', () => {
-      prevBtn.style.opacity = '0';
-      nextBtn.style.opacity = '0';
-    });
+    frame.addEventListener('mouseenter', () => { prevBtn.style.opacity = '1'; nextBtn.style.opacity = '1'; });
+    frame.addEventListener('mouseleave', () => { prevBtn.style.opacity = '0'; nextBtn.style.opacity = '0'; });
 
-    /* Touch swipe */
     let tx = 0;
     track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
     track.addEventListener('touchend',   e => {
       const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) > 40) { goTo(dx < 0 ? cur + 1 : cur - 1); restartTimer(); }
+      if (Math.abs(dx) > 40) { goTo(dx < 0 ? cur + 1 : cur - 1); restart(); }
     });
 
-    /* Keyboard (when frame is focused) */
     frame.setAttribute('tabindex', '0');
     frame.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft')  { goTo(cur - 1); restartTimer(); }
-      if (e.key === 'ArrowRight') { goTo(cur + 1); restartTimer(); }
+      if (e.key === 'ArrowLeft')  { goTo(cur - 1); restart(); }
+      if (e.key === 'ArrowRight') { goTo(cur + 1); restart(); }
     });
-  })();
+  }
+
+  makeSlider({
+    frameId: 'hero-frame', trackId: 'hero-track', dotsId: 'hero-dots',
+    captionId: 'hero-caption', prevId: 'hero-prev', nextId: 'hero-next',
+    interval: 3500,
+    slides: [
+      { label: 'Focus screen'      },
+      { label: 'Pomodoro timer'    },
+      { label: 'Schedule settings' },
+      { label: 'Site library'      },
+    ],
+  });
+
+  makeSlider({
+    frameId: 'period-frame', trackId: 'period-track', dotsId: 'period-dots',
+    captionId: 'period-caption', prevId: 'period-prev', nextId: 'period-next',
+    interval: 4000,
+    slides: [
+      { label: 'Period list'   },
+      { label: 'Edit period'   },
+      { label: 'Week schedule' },
+    ],
+  });
 
   /* ── Sticky header ── */
   const hdr = document.getElementById('site-header');
