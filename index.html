@@ -8,7 +8,52 @@
   <meta name="keywords" content="website blocker chrome, focus extension, pomodoro timer chrome extension, block distracting websites, productivity chrome extension, site blocker for work, block social media chrome">
   <meta property="og:title" content="Digital Zen — Block Distractions. Focus Deeply.">
   <meta property="og:description" content="Free Chrome extension that blocks distracting sites on a schedule and includes a Pomodoro timer. No account required.">
-  <link rel="canonical" href="https://your-domain.com">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://digital-zen.csmpoint.com/">
+  <meta property="og:image" content="https://digital-zen.csmpoint.com/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Digital Zen — Block Distractions. Focus Deeply.">
+  <meta name="twitter:description" content="Free Chrome extension that blocks distracting sites on a schedule and includes a Pomodoro timer. No account required.">
+  <meta name="twitter:image" content="https://digital-zen.csmpoint.com/img/og-image.png">
+  <link rel="canonical" href="https://digital-zen.csmpoint.com/">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Digital Zen",
+    "description": "A productivity browser extension that blocks distracting websites on a flexible schedule and includes a fully configurable Pomodoro timer for structured work sessions.",
+    "applicationCategory": "BrowserApplication",
+    "operatingSystem": "Chrome, Edge, Brave, Opera, Vivaldi",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://digital-zen.csmpoint.com/",
+    "downloadUrl": "https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj",
+    "softwareVersion": "1.0.1",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": {
+      "@type": "Person",
+      "name": "Denis Saveliev",
+      "url": "https://github.com/DenHelloWorld"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CSM Point",
+      "url": "https://csmpoint.com/"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "3"
+    }
+  }
+  </script>
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3aed'/%3E%3Ccircle cx='16' cy='16' r='9' stroke='white' stroke-width='2' fill='none'/%3E%3Cpolyline points='16,9 16,16 20,18' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
@@ -427,15 +472,15 @@
           <div class="flex h-full" id="period-track" style="transition:transform .5s cubic-bezier(.4,0,.2,1);">
 
             <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
-              <img src="img/period/001.png" alt="Digital Zen — Period list"
+              <img src="img/period/001.png" alt="Digital Zen — Period list" loading="lazy"
                    class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
             </div>
             <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
-              <img src="img/period/002.png" alt="Digital Zen — Edit period"
+              <img src="img/period/002.png" alt="Digital Zen — Edit period" loading="lazy"
                    class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
             </div>
             <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
-              <img src="img/period/003.png" alt="Digital Zen — Schedule view"
+              <img src="img/period/003.png" alt="Digital Zen — Schedule view" loading="lazy"
                    class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
             </div>
 
@@ -512,7 +557,7 @@
       <!-- Visual left -->
       <div class="order-2 lg:order-1 rounded-2xl border flex items-center justify-center p-6"
            style="background:var(--bg); border-color:var(--border);">
-        <img src="img/hero/screen-pomodoro.png" alt="Digital Zen — Pomodoro timer screen"
+        <img src="img/hero/screen-pomodoro.png" alt="Digital Zen — Pomodoro timer screen" loading="lazy"
              class="w-64 lg:w-72 object-contain block select-none rounded-xl">
       </div>
       <!-- Text right -->
@@ -542,7 +587,7 @@
       <!-- Visual right -->
       <div class="rounded-2xl border flex items-center justify-center p-5"
            style="background:var(--bg); border-color:var(--border);">
-        <img src="img/hero/web-hero.png" alt="Digital Zen — Site library"
+        <img src="img/hero/web-hero.png" alt="Digital Zen — Site library" loading="lazy"
              class="w-56 lg:w-72 object-contain block select-none rounded-xl">
       </div>
     </div>
@@ -618,21 +663,21 @@
           <!-- Slide 1 — Focus Screen -->
           <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
             <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Focus Screen — Warn Mode</div>
-            <img src="img/action/Warn.png" alt="Digital Zen — Focus screen warn mode"
+            <img src="img/action/Warn.png" alt="Digital Zen — Focus screen warn mode" loading="lazy"
                  class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
           </div>
 
           <!-- Slide 2 — Pomodoro -->
           <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
             <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Pomodoro Screen — Running</div>
-            <img src="img/action/pomadora.png" alt="Digital Zen — Pomodoro timer running"
+            <img src="img/action/pomadora.png" alt="Digital Zen — Pomodoro timer running" loading="lazy"
                  class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
           </div>
 
           <!-- Slide 3 — Period List -->
           <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
             <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Period List — Multiple Periods</div>
-            <img src="img/action/focus-time.png" alt="Digital Zen — Period list"
+            <img src="img/action/focus-time.png" alt="Digital Zen — Period list" loading="lazy"
                  class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
           </div>
 
@@ -640,9 +685,9 @@
           <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
             <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Dark / Light Theme</div>
             <div class="flex items-end justify-center gap-4 flex-wrap">
-              <img src="img/action/darck-mode.png" alt="Digital Zen — Dark theme"
+              <img src="img/action/darck-mode.png" alt="Digital Zen — Dark theme" loading="lazy"
                    class="max-h-72 w-auto object-contain rounded-2xl select-none" draggable="false">
-              <img src="img/action/light-mode.png" alt="Digital Zen — Light theme"
+              <img src="img/action/light-mode.png" alt="Digital Zen — Light theme" loading="lazy"
                    class="max-h-72 w-auto object-contain rounded-2xl select-none" draggable="false">
             </div>
           </div>
@@ -844,7 +889,7 @@
       <div>
         <div class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--hint);">Links</div>
         <div class="space-y-2.5">
-          <a href="https://github.com/DenHelloWorld" target="_blank" rel="noopener"
+          <a href="https://github.com/DenHelloWorld/digital-zen" target="_blank" rel="noopener"
              class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
             GitHub
@@ -921,7 +966,7 @@
     </div>
 
     <div class="pt-8 border-t text-center text-xs" style="border-color:var(--border); color:var(--hint);">
-      © 2025 Digital Zen · MIT License · All data stays in your browser
+      © 2026 Digital Zen · MIT License · All data stays in your browser
     </div>
   </div>
 </footer>
