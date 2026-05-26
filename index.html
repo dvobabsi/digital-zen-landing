@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Zen — Website Blocker &amp; Pomodoro Timer for Chrome</title>
+  <meta name="description" content="Digital Zen helps you stay focused by blocking distracting websites on a schedule with a built-in Pomodoro timer. Free Chrome extension.">
+  <meta name="keywords" content="website blocker chrome, focus extension, pomodoro timer chrome extension, block distracting websites, productivity chrome extension, site blocker for work, block social media chrome">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Digital Zen">
+  <meta property="og:title" content="Digital Zen — Block Distractions. Focus Deeply.">
+  <meta property="og:description" content="Free Chrome extension that blocks distracting sites on a schedule and includes a Pomodoro timer. No account required.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://digital-zen.csmpoint.com/">
+  <meta property="og:image" content="https://digital-zen.csmpoint.com/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@DenisSaveliev3">
+  <meta name="twitter:creator" content="@DenisSaveliev3">
+  <meta name="twitter:title" content="Digital Zen — Block Distractions. Focus Deeply.">
+  <meta name="twitter:description" content="Free Chrome extension that blocks distracting sites on a schedule and includes a Pomodoro timer. No account required.">
+  <meta name="twitter:image" content="https://digital-zen.csmpoint.com/img/og-image.png">
+
+  <!-- Canonical & hreflang -->
+  <link rel="canonical" href="https://digital-zen.csmpoint.com/">
+  <link rel="alternate" hreflang="en"       href="https://digital-zen.csmpoint.com/">
+  <link rel="alternate" hreflang="uk"       href="https://digital-zen.csmpoint.com/uk/">
+  <link rel="alternate" hreflang="ru"       href="https://digital-zen.csmpoint.com/ru/">
+  <link rel="alternate" hreflang="x-default" href="https://digital-zen.csmpoint.com/">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Digital Zen",
+    "description": "A productivity browser extension that blocks distracting websites on a flexible schedule and includes a fully configurable Pomodoro timer for structured work sessions.",
+    "applicationCategory": "BrowserApplication",
+    "operatingSystem": "Chrome, Edge, Brave, Opera, Vivaldi",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://digital-zen.csmpoint.com/",
+    "downloadUrl": "https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj",
+    "softwareVersion": "1.0.1",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": {
+      "@type": "Person",
+      "name": "Denis Saveliev",
+      "url": "https://github.com/DenHelloWorld"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "CSM Point",
+      "url": "https://csmpoint.com/"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "3"
+    }
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3aed'/%3E%3Ccircle cx='16' cy='16' r='9' stroke='white' stroke-width='2' fill='none'/%3E%3Cpolyline points='16,9 16,16 20,18' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..60,400;12..60,600;12..60,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dz-bg':      '#0f0d16',
+            'dz-surface': '#1a1625',
+            'dz-primary': '#7c3aed',
+            'dz-light':   '#a78bfa',
+          },
+          fontFamily: {
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg:           #0f0d16;
+      --surface:      #1a1625;
+      --surface-2:    rgba(255,255,255,0.04);
+      --border:       rgba(124,58,237,0.2);
+      --primary:      #7c3aed;
+      --primary-lt:   #a78bfa;
+      --glow:         rgba(124,58,237,0.35);
+      --text:         #f8fafc;
+      --muted:        #94a3b8;
+      --hint:         #64748b;
+    }
+
+    /* ── Light theme ── */
+    html.light {
+      --bg:           #f1f5f9;
+      --surface:      #ffffff;
+      --surface-2:    rgba(0,0,0,0.04);
+      --border:       rgba(124,58,237,0.18);
+      --primary:      #7c3aed;
+      --primary-lt:   #6d28d9;
+      --glow:         rgba(124,58,237,0.2);
+      --text:         #0f172a;
+      --muted:        #475569;
+      --hint:         #94a3b8;
+    }
+    html.light body { background: var(--bg); color: var(--text); }
+    html.light #site-header { background: rgba(241,245,249,.9) !important; }
+    html.light .blob { filter: blur(48px) brightness(1.2); }
+    html.light ::-webkit-scrollbar-track { background: #e2e8f0; }
+    html.light .text-white  { color: #0f172a !important; }
+    html.light .btn-accent,
+    html.light .btn-accent * { color: #fff !important; }
+    html.light .text-slate-100,
+    html.light .text-slate-300,
+    html.light .text-slate-400 { color: #475569 !important; }
+    html.light .bg-dz-bg    { background: var(--bg) !important; }
+    html.light .bg-dz-surface { background: var(--surface) !important; }
+
+    /* ---------- Nav active link ---------- */
+    .nav-link { transition: color .2s; }
+    .nav-link.active { color: #fff; }
+    html.light .nav-link.active { color: var(--primary) !important; }
+
+    /* ---------- Scroll progress bar ---------- */
+    #scroll-progress {
+      position: fixed; top: 64px; left: 0; z-index: 49;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-lt));
+      pointer-events: none;
+      transition: width .08s linear;
+    }
+
+    /* Theme toggle button */
+    #theme-toggle {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+      color: var(--primary-lt);
+      flex-shrink: 0;
+    }
+    #theme-toggle:hover { background: rgba(124,58,237,.15); border-color: var(--primary); }
+
+    .lang-opt { transition: background .15s, color .15s; }
+    .lang-opt:hover { background: rgba(124,58,237,.12) !important; color: var(--text) !important; }
+
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+
+    /* ---------- Animations ---------- */
+    @keyframes ctaPulse {
+      0%,100% { box-shadow: 0 0 0 0 var(--glow); }
+      50%      { box-shadow: 0 0 0 18px rgba(124,58,237,0); }
+    }
+    .btn-pulse { animation: ctaPulse 2s ease-in-out 3; }
+
+    @keyframes breathe {
+      from { transform: scale(1.0); }
+      to   { transform: scale(1.04); }
+    }
+    .blob { animation: breathe 4s ease-in-out infinite alternate; }
+
+    @keyframes ringDraw {
+      from { stroke-dashoffset: 1445; }
+      to   { stroke-dashoffset: 506; } /* ~65% of 1445 (r=230) */
+    }
+    .ring-anim {
+      stroke-dasharray: 1445;
+      stroke-dashoffset: 1445;
+      animation: ringDraw 3s ease-in-out 0.6s forwards;
+    }
+
+    /* ---------- Scroll reveal ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- Card hover ---------- */
+    .card-hover { transition: transform .2s, border-color .2s; }
+    .card-hover:hover { transform: translateY(-3px); border-color: rgba(124,58,237,.5) !important; }
+
+    /* ---------- FAQ ---------- */
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+    }
+    .faq-body.open { max-height: 240px; }
+    .faq-inner { padding-bottom: 1.25rem; }
+
+    .faq-btn { transition: background .2s; }
+    .faq-btn:hover { background: rgba(124,58,237,.08) !important; }
+    .faq-btn[aria-expanded="true"] { background: rgba(124,58,237,.1) !important; }
+    .faq-icon { transition: transform .35s ease, color .2s; }
+    .faq-btn[aria-expanded="true"] .faq-icon { color: var(--primary-lt); }
+
+    /* ---------- Screenshot carousel ---------- */
+    .slides { display: flex; transition: transform .4s ease; }
+    .slide  { flex: 0 0 100%; }
+
+    /* ---------- Focus visible ---------- */
+    *:focus-visible { outline: 2px solid var(--primary-lt); outline-offset: 2px; }
+
+    /* ---------- Scrollbar ---------- */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+    /* ── Hero slider & ring — responsive sizing ── */
+    #hero-frame           { width: 290px; }   /* mobile +12% */
+    .hero-slide-height    { height: 445px; }
+    #hero-ring            { width: 380px; height: 380px; }
+    .period-slide-height  { height: 300px; }
+
+    @media (min-width: 1024px) {
+      #hero-frame           { width: 360px; }  /* desktop +38% */
+      .hero-slide-height    { height: 545px; }
+      #hero-ring            { width: 500px; height: 500px; }
+      .period-slide-height  { height: 380px; }
+    }
+  </style>
+</head>
+
+<body class="font-body antialiased">
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
+<header id="site-header"
+  class="fixed inset-x-0 top-0 z-50 h-16 flex items-center transition-all duration-300"
+  style="background:rgba(15,13,22,.85);">
+  <div class="max-w-7xl mx-auto w-full px-5 lg:px-8 flex items-center justify-between gap-6">
+
+    <!-- Logo -->
+    <a href="#" aria-label="Digital Zen home" class="flex items-center gap-2.5 shrink-0">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--primary);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <span class="font-display font-bold text-[17px] text-white">Digital Zen</span>
+    </a>
+
+    <!-- Nav (desktop) -->
+    <nav class="hidden md:flex items-center gap-7" aria-label="Main navigation">
+      <a href="#features" class="nav-link text-sm text-slate-400 hover:text-white">Features</a>
+      <a href="#how"      class="nav-link text-sm text-slate-400 hover:text-white">How it works</a>
+      <a href="#faq"      class="nav-link text-sm text-slate-400 hover:text-white">FAQ</a>
+    </nav>
+
+    <!-- Language switcher -->
+    <div class="relative shrink-0" id="lang-switcher">
+      <button id="lang-btn" aria-haspopup="true" aria-expanded="false"
+        class="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-colors"
+        style="border-color:var(--border); background:var(--surface-2); color:var(--muted);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        EN
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="lang-menu" role="menu"
+        class="absolute right-0 top-full mt-2 rounded-xl border py-1 shadow-lg"
+        style="background:var(--surface); border-color:var(--border); min-width:140px; display:none; z-index:100;">
+        <a href="./" role="menuitem" aria-current="page" class="lang-opt flex items-center gap-2 px-3 py-2 text-xs font-medium" style="color:var(--text); background:rgba(124,58,237,.1);">🇬🇧 EN — English</a>
+        <a href="uk/" role="menuitem" class="lang-opt flex items-center gap-2 px-3 py-2 text-xs font-medium" style="color:var(--muted);">🇺🇦 UA — Українська</a>
+        <a href="ru/" role="menuitem" class="lang-opt flex items-center gap-2 px-3 py-2 text-xs font-medium" style="color:var(--muted);">🇷🇺 RU — Русский</a>
+      </div>
+    </div>
+
+    <!-- Theme toggle -->
+    <button id="theme-toggle" aria-label="Toggle light/dark theme">
+      <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="icon-sun"  width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+
+    <!-- CTA -->
+    <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+       target="_blank" rel="noopener"
+       class="btn-accent hidden sm:flex items-center gap-2 text-sm font-semibold text-white px-4 py-2 rounded-xl transition-colors"
+       style="background:var(--primary);"
+       onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+      <img src="icons/chrome-logo.svg" width="16" height="16" alt="Chrome" class="shrink-0">
+      Add to Chrome — Free
+    </a>
+  </div>
+</header>
+
+<div id="scroll-progress" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section id="hero" class="min-h-screen flex items-center pt-16 overflow-hidden">
+  <div class="max-w-7xl mx-auto w-full px-5 lg:px-8 py-20">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- ── Text ── -->
+      <div class="reveal">
+        <h1 class="font-display font-bold text-5xl lg:text-6xl xl:text-[68px] leading-[1.08] text-white mb-6">
+          Block Distractions.<br>
+          <span style="color:var(--primary-lt);">Focus Deeply.</span>
+        </h1>
+
+        <p class="text-lg leading-relaxed mb-8 max-w-[480px]" style="color:var(--muted);">
+          Digital Zen blocks distracting websites on a schedule and structures your day with a built-in Pomodoro timer.
+        </p>
+
+        <!-- CTA -->
+        <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+           target="_blank" rel="noopener" id="hero-cta"
+           class="btn-accent btn-pulse inline-flex items-center gap-3 text-white font-semibold text-base px-7 py-4 rounded-xl transition-colors mb-3"
+           style="background:var(--primary);"
+           onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+          <img src="icons/chrome-logo.svg" width="20" height="20" alt="Chrome" class="shrink-0">
+          Add to Chrome — It's Free
+        </a>
+
+        <p class="text-sm mb-8" style="color:var(--hint);">Free · No account · Works offline</p>
+
+        <!-- Browser icons -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="text-xs mr-1" style="color:var(--hint);">Also on</span>
+          <img src="icons/chrome-logo.svg"  width="22" height="22" alt="Chrome" style="opacity:.6;">
+          <img src="icons/bing-logo.svg"    width="22" height="22" alt="Edge"   style="opacity:.6;">
+          <img src="icons/brave-logo.webp"  width="22" height="22" alt="Brave"  style="opacity:.6;">
+          <img src="icons/opera-logo.svg"   width="22" height="22" alt="Opera"  style="opacity:.6;">
+        </div>
+      </div>
+
+      <!-- ── Visual ── -->
+      <div class="relative flex items-center justify-center reveal" style="transition-delay:.2s;">
+        <!-- Glow blob -->
+        <div class="blob absolute w-80 h-80 rounded-full pointer-events-none"
+             style="background:radial-gradient(circle,rgba(124,58,237,.45) 0%,transparent 70%); filter:blur(48px);"></div>
+
+        <!-- Ring -->
+        <svg id="hero-ring" class="absolute" viewBox="0 0 500 500" fill="none" aria-hidden="true">
+          <circle cx="250" cy="250" r="230" stroke="rgba(124,58,237,.08)" stroke-width="2"/>
+          <circle class="ring-anim" cx="250" cy="250" r="230"
+                  stroke="url(#rg)" stroke-width="3" stroke-linecap="round"
+                  transform="rotate(-90 250 250)"/>
+          <defs>
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#a78bfa"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- Extension mock — Hero slider -->
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl border" id="hero-frame"
+             style="background:var(--bg); border-color:var(--border); max-width:100%;">
+
+          <!-- Slide track -->
+          <div class="relative overflow-hidden hero-slide-height">
+            <div class="flex h-full" id="hero-track" style="transition:transform .5s cubic-bezier(.4,0,.2,1);">
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/screen-home.png" alt="Digital Zen — Focus screen"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/screen-pomodoro.png" alt="Digital Zen — Pomodoro timer"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/set-hero.png" alt="Digital Zen — Schedule settings"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+              <div class="hero-slide flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+                <img src="img/hero/web-hero.png" alt="Digital Zen — Site library"
+                     class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+              </div>
+
+            </div>
+
+            <!-- Prev -->
+            <button id="hero-prev" aria-label="Previous screenshot"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                    style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+
+            <!-- Next -->
+            <button id="hero-next" aria-label="Next screenshot"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                    style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Bottom bar -->
+          <div class="flex items-center justify-between px-4 py-3" style="border-top:1px solid var(--border);">
+            <span class="text-xs font-medium" id="hero-caption" style="color:var(--muted);">Focus screen</span>
+            <div class="flex items-center gap-1.5" id="hero-dots"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PAIN POINTS
+═══════════════════════════════════════════════════════ -->
+<section id="pain" class="py-24" style="background:var(--surface);">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Sound Familiar?</h2>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border);">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="clock" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Open the browser "for a second" — lose 40 minutes</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.1s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="trending-down" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Workday ends, the main task still isn't done</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.2s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="zap-off" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Every interruption breaks your flow for 20 minutes</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.3s;">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="settings" style="color:var(--primary-lt); width:26px; height:26px;"></i>
+        </div>
+        <p class="font-medium text-white leading-snug">Tried focus apps — too complicated to set up</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SOLUTION
+═══════════════════════════════════════════════════════ -->
+<section id="solution" class="py-24">
+  <div class="max-w-3xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl text-white mb-5 reveal">
+      Meet Digital Zen —<br>Your Browser Focus Guard
+    </h2>
+    <p class="text-lg leading-relaxed mb-10 reveal" style="color:var(--muted); transition-delay:.1s;">
+      Set which sites to block and when — then just work. The built-in Pomodoro timer helps you alternate focus and rest without thinking about it.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-3 reveal" style="transition-delay:.2s;">
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">🚫 Smart Blocking</span>
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">📅 Custom Schedules</span>
+      <span class="px-5 py-2.5 rounded-full text-sm font-medium text-white border" style="background:var(--surface-2); border-color:var(--border);">🍅 Pomodoro Timer</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FEATURES  (4 alternating blocks)
+═══════════════════════════════════════════════════════ -->
+<section id="features" class="py-8">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 space-y-28">
+
+    <!-- ── Feature 1 ── Flexible Schedules -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Visual left — Period slider -->
+      <div class="order-2 lg:order-1 rounded-2xl overflow-hidden border" id="period-frame"
+           style="background:var(--bg); border-color:var(--border);">
+
+        <div class="relative overflow-hidden period-slide-height">
+          <div class="flex h-full" id="period-track" style="transition:transform .5s cubic-bezier(.4,0,.2,1);">
+
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/001.png" alt="Digital Zen — Period list" loading="lazy"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+            </div>
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/002.png" alt="Digital Zen — Edit period" loading="lazy"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+            </div>
+            <div class="flex-shrink-0 w-full h-full flex items-center justify-center p-3">
+              <img src="img/period/003.png" alt="Digital Zen — Schedule view" loading="lazy"
+                   class="max-w-full max-h-full object-contain rounded-xl select-none" draggable="false">
+            </div>
+
+          </div>
+
+          <button id="period-prev" aria-label="Previous"
+                  class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                  style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button id="period-next" aria-label="Next"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 transition-all duration-200"
+                  style="background:rgba(15,13,22,.75); border:1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between px-4 py-3" style="border-top:1px solid var(--border);">
+          <span class="text-xs font-medium" id="period-caption" style="color:var(--muted);">Period list</span>
+          <div class="flex items-center gap-1.5" id="period-dots"></div>
+        </div>
+      </div>
+      <!-- Text right -->
+      <div class="order-1 lg:order-2">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="calendar-days" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Block sites automatically, on your schedule</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Create focus periods for any time range and any days of the week. Morning routine, work hours, study time — Digital Zen enforces the schedule so you don't have to.</p>
+      </div>
+    </div>
+
+    <!-- ── Feature 2 ── 3 Blocking Modes -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Text left -->
+      <div>
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="shield-check" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Block, warn, or whitelist — you choose</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Full block closes the tab instantly. Warning mode shows a reminder you can dismiss. Whitelist mode lets only your approved sites through — everything else is blocked.</p>
+      </div>
+      <!-- Visual right -->
+      <div class="rounded-2xl p-6 border" style="background:var(--surface); border-color:var(--border);">
+        <div class="text-xs uppercase tracking-widest mb-5" style="color:var(--hint);">Blocking Mode</div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.25);">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#ef4444"><path d="M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880t156 31.5Q709-817 763-763t85.5 127Q880-563 880-480t-31.5 156Q817-251 763-197t-127 85.5Q563-80 480-80t-156-31.5ZM480-160q54 0 104-17.5t92-50.5L228-676q-33 42-50.5 92T160-480q0 134 93 227t227 93Zm252-124q33-42 50.5-92T800-480q0-134-93-227t-227-93q-54 0-104 17.5T284-732l448 448ZM480-480Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold text-white mb-1">Block</div>
+            <div class="text-xs" style="color:var(--muted);">Tab closes instantly</div>
+          </div>
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(251,191,36,.08); border-color:rgba(251,191,36,.25);">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#fbbf24"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm330.5-51.5Q520-263 520-280t-11.5-28.5Q497-320 480-320t-28.5 11.5Q440-297 440-280t11.5 28.5Q463-240 480-240t28.5-11.5ZM440-360h80v-200h-80v200Zm40-100Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold text-white mb-1">Warn</div>
+            <div class="text-xs" style="color:var(--muted);">Gentle reminder</div>
+          </div>
+          <div class="text-center p-4 rounded-xl border" style="background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.25);">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#22c55e"><path d="M272-160q-30 0-51-21t-21-51q0-21 12-39.5t32-26.5l156-62v-90q-54 63-125.5 96.5T120-320v-80q68 0 123.5-28T344-508l54-64q12-14 28-21t34-7h40q18 0 34 7t28 21l54 64q45 52 100.5 80T840-400v80q-83 0-154.5-33.5T560-450v90l156 62q20 8 32 26.5t12 39.5q0 30-21 51t-51 21H400v-20q0-26 17-43t43-17h120q9 0 14.5-5.5T600-260q0-9-5.5-14.5T580-280H460q-42 0-71 29t-29 71v20h-88Zm151.5-503.5Q400-687 400-720t23.5-56.5Q447-800 480-800t56.5 23.5Q560-753 560-720t-23.5 56.5Q513-640 480-640t-56.5-23.5Z"/></svg>
+            </div>
+            <div class="text-sm font-semibold text-white mb-1">Allow</div>
+            <div class="text-xs" style="color:var(--muted);">Whitelist only</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Feature 3 ── Pomodoro -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Visual left -->
+      <div class="order-2 lg:order-1 rounded-2xl border flex items-center justify-center p-6"
+           style="background:var(--bg); border-color:var(--border);">
+        <img src="img/hero/screen-pomodoro.png" alt="Digital Zen — Pomodoro timer screen" loading="lazy"
+             class="w-64 lg:w-72 object-contain block select-none rounded-xl">
+      </div>
+      <!-- Text right -->
+      <div class="order-1 lg:order-2">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="timer" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">Structure your day, session by session</h3>
+        <p class="text-lg leading-relaxed" style="color:var(--muted);">Work, short break, long break — all configurable. The visual progress ring and browser notifications keep you on track without breaking your concentration.</p>
+      </div>
+    </div>
+
+    <!-- ── Feature 4 ── 100+ Sites -->
+    <div class="grid lg:grid-cols-2 gap-14 items-center reveal">
+      <!-- Text left -->
+      <div>
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(124,58,237,.15);">
+          <i data-lucide="library" style="color:var(--primary-lt); width:24px; height:24px;"></i>
+        </div>
+        <h3 class="font-display font-semibold text-2xl text-white mb-4">All the distracting sites, already in the list</h3>
+        <p class="text-lg leading-relaxed mb-5" style="color:var(--muted);">Instagram, TikTok, Reddit, Netflix, YouTube and 100+ more are pre-organized into folders. Toggle entire categories on or off in one click.</p>
+        <div class="inline-flex items-center gap-2 text-sm font-medium" style="color:var(--primary-lt);">
+          <i data-lucide="check-circle-2" style="width:16px;height:16px;"></i>
+          100+ sites pre-loaded out of the box
+        </div>
+      </div>
+      <!-- Visual right -->
+      <div class="rounded-2xl border flex items-center justify-center p-5"
+           style="background:var(--bg); border-color:var(--border);">
+        <img src="img/hero/web-hero.png" alt="Digital Zen — Site library" loading="lazy"
+             class="w-56 lg:w-72 object-contain block select-none rounded-xl">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════════════ -->
+<section id="how" class="py-24" style="background:var(--surface);">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl text-white mb-16 reveal">Up and Running in 3 Steps</h2>
+
+    <div class="grid md:grid-cols-3 gap-8 reveal">
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="download" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">1</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Install the extension</h3>
+        <p style="color:var(--muted);">Click "Add to Chrome" — takes 10 seconds</p>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="list-checks" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">2</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Choose sites &amp; schedule</h3>
+        <p style="color:var(--muted);">Pick which sites to block and when</p>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <div class="relative w-20 h-20 rounded-full flex items-center justify-center mb-6 border" style="background:rgba(124,58,237,.12); border-color:var(--border);">
+          <i data-lucide="play-circle" style="color:var(--primary-lt); width:32px; height:32px;"></i>
+          <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white" style="background:var(--primary);">3</span>
+        </div>
+        <h3 class="font-display font-semibold text-xl text-white mb-2">Start your focus session</h3>
+        <p style="color:var(--muted);">Hit the toggle and get to work</p>
+      </div>
+
+    </div>
+
+    <div class="mt-12 reveal" style="transition-delay:.15s;">
+      <p class="mb-6" style="color:var(--muted);">Setup takes 2 minutes. No account required.</p>
+      <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 font-semibold text-white px-6 py-3 rounded-xl border transition-all"
+         style="border-color:var(--primary);"
+         onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background=''">
+        <img src="icons/chrome-logo.svg" width="18" height="18" alt="Chrome" class="shrink-0">
+        Add to Chrome — Free
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREENSHOTS
+═══════════════════════════════════════════════════════ -->
+<section id="screenshots" class="py-24">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Digital Zen in Action</h2>
+
+    <div class="reveal">
+      <div class="rounded-2xl overflow-hidden border" style="border-color:var(--border);">
+        <div class="slides" id="slides">
+
+          <!-- Slide 1 — Focus Screen -->
+          <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Focus Screen — Warn Mode</div>
+            <img src="img/action/Warn.png" alt="Digital Zen — Focus screen warn mode" loading="lazy"
+                 class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
+          </div>
+
+          <!-- Slide 2 — Pomodoro -->
+          <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Pomodoro Screen — Running</div>
+            <img src="img/action/pomadora.png" alt="Digital Zen — Pomodoro timer running" loading="lazy"
+                 class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
+          </div>
+
+          <!-- Slide 3 — Period List -->
+          <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Period List — Multiple Periods</div>
+            <img src="img/action/focus-time.png" alt="Digital Zen — Period list" loading="lazy"
+                 class="max-h-80 w-auto object-contain rounded-2xl select-none" draggable="false">
+          </div>
+
+          <!-- Slide 4 — Dark / Light Theme -->
+          <div class="slide flex flex-col items-center justify-center gap-4 p-6" style="background:var(--surface);">
+            <div class="text-xs uppercase tracking-widest" style="color:var(--hint);">Dark / Light Theme</div>
+            <div class="flex items-end justify-center gap-4 flex-wrap">
+              <img src="img/action/darck-mode.png" alt="Digital Zen — Dark theme" loading="lazy"
+                   class="max-h-72 w-auto object-contain rounded-2xl select-none" draggable="false">
+              <img src="img/action/light-mode.png" alt="Digital Zen — Light theme" loading="lazy"
+                   class="max-h-72 w-auto object-contain rounded-2xl select-none" draggable="false">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Dots -->
+      <div id="dots" class="flex items-center justify-center gap-2 mt-5"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════════════ -->
+<section id="testimonials" class="py-24" style="background:var(--surface);">
+  <div class="max-w-6xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-8 reveal">
+      Built for People Who Value Deep Work
+    </h2>
+
+    <!-- Trust bar -->
+    <div class="flex flex-wrap items-center justify-center gap-6 mb-16 text-sm reveal" style="color:var(--muted); transition-delay:.1s;">
+      <span class="flex items-center gap-2"><span class="text-amber-400">★★★★★</span> Chrome Web Store</span>
+      <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
+      <span>Open Source · MIT License</span>
+      <span class="hidden sm:block w-px h-4 bg-slate-700"></span>
+      <span>Chrome · Edge · Brave · Opera</span>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-5">
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border);">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 btn-accent rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:var(--primary);">DS</div>
+          <div>
+            <div class="font-semibold text-white text-sm">David S.</div>
+            <div class="text-xs" style="color:var(--muted);">Freelance Developer</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"Finally a focus extension that doesn't feel like bloatware. Installed, configured in 2 minutes, works perfectly."</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.1s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 btn-accent rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:linear-gradient(135deg,#7c3aed,#06b6d4);">MK</div>
+          <div>
+            <div class="font-semibold text-white text-sm">Maria K.</div>
+            <div class="text-xs" style="color:var(--muted);">UX Designer</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"The warning mode instead of full blocking is exactly what I needed — gentle nudge, not a wall."</p>
+      </div>
+
+      <div class="card-hover reveal p-6 rounded-2xl border" style="background:var(--surface-2); border-color:var(--border); transition-delay:.2s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 btn-accent rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style="background:linear-gradient(135deg,#7c3aed,#ec4899);">AT</div>
+          <div>
+            <div class="font-semibold text-white text-sm">Alex T.</div>
+            <div class="text-xs" style="color:var(--muted);">CS Student</div>
+          </div>
+        </div>
+        <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+        <p class="text-sm leading-relaxed" style="color:var(--muted);">"Pomodoro + site blocking in one tool. No more switching between apps."</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════════════ -->
+<section id="faq" class="py-24">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8">
+    <h2 class="font-display font-semibold text-4xl text-white text-center mb-12 reveal">Frequently Asked Questions</h2>
+
+    <div class="grid md:grid-cols-2 gap-3 items-start">
+
+      <!-- FAQ items template -->
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border);">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Is Digital Zen free?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes, completely free and open-source under the MIT license.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.05s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Which browsers are supported?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Chrome, Edge, Brave, Opera, Vivaldi, and all Chromium-based browsers.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.1s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Does it track my browsing?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">No. All data stays in your browser. Nothing is sent to any server.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.15s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Can I bypass the block?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">In Warn mode, yes — you can dismiss the warning. In Block mode, the tab is closed immediately.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.2s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Does it work offline?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. Digital Zen works entirely offline with no internet connection required.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal rounded-xl overflow-hidden border" style="border-color:var(--border); transition-delay:.25s;">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left" style="background:var(--surface);" aria-expanded="false">
+          <span class="font-medium text-white pr-4">Can I import / export my settings?</span>
+          <i data-lucide="chevron-down" class="faq-icon shrink-0 transition-transform duration-300" style="color:var(--primary-lt); width:22px; height:22px;"></i>
+        </button>
+        <div class="faq-body" style="background:var(--surface);">
+          <div class="faq-inner px-5 pb-5 pt-0 text-sm leading-relaxed" style="color:var(--muted);">Yes. You can export a full JSON backup and restore it anytime.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FINAL CTA
+═══════════════════════════════════════════════════════ -->
+<section id="cta" class="py-28 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(124,58,237,.22) 0%, transparent 70%);"></div>
+
+  <div class="relative max-w-3xl mx-auto px-5 lg:px-8 text-center">
+    <h2 class="font-display font-semibold text-4xl lg:text-5xl text-white mb-4 reveal">
+      Start Your First Focus Session Today
+    </h2>
+    <p class="text-lg mb-10 reveal" style="color:var(--muted); transition-delay:.1s;">
+      Free. No account. Works 30 seconds after install.
+    </p>
+    <div class="reveal" style="transition-delay:.2s;">
+      <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+         target="_blank" rel="noopener"
+         class="btn-accent btn-pulse inline-flex items-center justify-center gap-3 text-white font-semibold text-lg px-10 py-4 rounded-xl w-full sm:w-auto transition-colors"
+         style="background:var(--primary);"
+         onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--primary)'">
+        <img src="icons/chrome-logo.svg" width="22" height="22" alt="Chrome" class="shrink-0">
+        Install Digital Zen
+      </a>
+      <p class="text-sm mt-4" style="color:var(--hint);">★★★★★ · Chrome Web Store · Open Source · MIT</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer class="py-14 border-t" style="background:var(--surface); border-color:var(--border);">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="grid md:grid-cols-3 gap-10 mb-10">
+
+      <!-- Col 1 -->
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--primary);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="font-display font-bold text-[17px] text-white">Digital Zen</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">Block distractions. Focus deeply. Work better.</p>
+      </div>
+
+      <!-- Col 2 -->
+      <div>
+        <div class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--hint);">Links</div>
+        <div class="space-y-2.5">
+          <a href="https://github.com/DenHelloWorld/digital-zen" target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+             target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <img src="icons/chrome-logo.svg" width="14" height="14" alt="Chrome">
+            Chrome Web Store
+          </a>
+          <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            MIT License
+          </a>
+          <a href="https://digital-zen.csmpoint.com/api/privacy-policy.php" target="_blank" rel="noopener"
+             class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Privacy Policy
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 3 -->
+      <div>
+        <div class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:var(--hint);">Built by</div>
+
+        <!-- Denis -->
+        <div class="mb-4">
+          <div class="text-sm font-medium text-white mb-1.5">Denis Saveliev</div>
+          <div class="flex flex-col gap-1.5">
+            <a href="https://github.com/DenHelloWorld" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              github.com/DenHelloWorld
+            </a>
+            <a href="https://www.linkedin.com/in/denis-saveliev-b216a7269/" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Vladyslav -->
+        <div class="mb-4">
+          <div class="text-sm font-medium text-white mb-1.5">Vladyslav Donets</div>
+          <div class="flex flex-col gap-1.5">
+            <a href="https://github.com/dvobabsi" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              github.com/dvobabsi
+            </a>
+            <a href="https://www.linkedin.com/in/donets-vladyslav/" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- CSM Point -->
+        <div>
+          <div class="text-sm font-medium text-white mb-1.5">CSM Point <span class="text-xs font-normal" style="color:var(--hint);">— development partner</span></div>
+          <div class="flex flex-col gap-1.5">
+            <a href="https://csmpoint.com/" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              csmpoint.com
+            </a>
+            <a href="https://www.linkedin.com/company/csmpoint" target="_blank" rel="noopener"
+               class="flex items-center gap-2 text-sm transition-colors hover:text-white" style="color:var(--muted);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t text-center text-xs" style="border-color:var(--border); color:var(--hint);">
+      © 2026 Digital Zen · MIT License · All data stays in your browser
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MOBILE STICKY CTA
+═══════════════════════════════════════════════════════ -->
+<div id="mob-cta" class="sm:hidden fixed bottom-0 inset-x-0 z-40 p-3 border-t"
+     style="background:rgba(15,13,22,.95); border-color:var(--border); backdrop-filter:blur(16px);">
+  <a href="https://chromewebstore.google.com/detail/digital-zen/nfonpieonaajbkncdoijinhplnfpkgkj"
+     id="mob-cta-btn" target="_blank" rel="noopener"
+     class="btn-accent flex items-center justify-center gap-2 w-full font-semibold text-white py-3.5 rounded-xl"
+     style="background:var(--primary);">
+    <img src="icons/chrome-logo.svg" width="18" height="18" alt="Chrome" class="shrink-0">
+    Add to Chrome — Free
+  </a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  /* ── Init Lucide ── */
+  lucide.createIcons();
+
+  /* ── Generic image slider ── */
+  function makeSlider(cfg) {
+    const track   = document.getElementById(cfg.trackId);
+    const dotsEl  = document.getElementById(cfg.dotsId);
+    const caption = document.getElementById(cfg.captionId);
+    const prevBtn = document.getElementById(cfg.prevId);
+    const nextBtn = document.getElementById(cfg.nextId);
+    const frame   = document.getElementById(cfg.frameId);
+    const slides  = cfg.slides;
+    const N       = slides.length;
+    let cur = 0, timer;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.setAttribute('aria-label', `Slide ${i + 1}`);
+      d.addEventListener('click', () => { goTo(i); restart(); });
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(i) {
+      cur = ((i % N) + N) % N;
+      track.style.transform = `translateX(-${cur * 100}%)`;
+      if (caption) caption.textContent = slides[cur].label;
+      dotsEl.querySelectorAll('button').forEach((d, idx) => {
+        d.style.cssText = idx === cur
+          ? 'width:18px;height:7px;background:var(--primary);border-radius:9999px;transition:all .3s;'
+          : 'width:7px;height:7px;background:rgba(255,255,255,.2);border-radius:9999px;transition:all .3s;';
+      });
+    }
+
+    function restart() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(cur + 1), cfg.interval || 3500);
+    }
+
+    goTo(0);
+    restart();
+
+    prevBtn.addEventListener('click', () => { goTo(cur - 1); restart(); });
+    nextBtn.addEventListener('click', () => { goTo(cur + 1); restart(); });
+
+    frame.addEventListener('mouseenter', () => { prevBtn.style.opacity = '1'; nextBtn.style.opacity = '1'; });
+    frame.addEventListener('mouseleave', () => { prevBtn.style.opacity = '0'; nextBtn.style.opacity = '0'; });
+
+    let tx = 0;
+    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 40) { goTo(dx < 0 ? cur + 1 : cur - 1); restart(); }
+    });
+
+    frame.setAttribute('tabindex', '0');
+    frame.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { goTo(cur - 1); restart(); }
+      if (e.key === 'ArrowRight') { goTo(cur + 1); restart(); }
+    });
+  }
+
+  makeSlider({
+    frameId: 'hero-frame', trackId: 'hero-track', dotsId: 'hero-dots',
+    captionId: 'hero-caption', prevId: 'hero-prev', nextId: 'hero-next',
+    interval: 3500,
+    slides: [
+      { label: 'Focus screen'      },
+      { label: 'Pomodoro timer'    },
+      { label: 'Schedule settings' },
+      { label: 'Site library'      },
+    ],
+  });
+
+  makeSlider({
+    frameId: 'period-frame', trackId: 'period-track', dotsId: 'period-dots',
+    captionId: 'period-caption', prevId: 'period-prev', nextId: 'period-next',
+    interval: 4000,
+    slides: [
+      { label: 'Period list'   },
+      { label: 'Edit period'   },
+      { label: 'Week schedule' },
+    ],
+  });
+
+  /* ── Sticky header ── */
+  const hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      hdr.style.borderBottom = '1px solid rgba(124,58,237,.15)';
+      hdr.style.backdropFilter = 'blur(20px)';
+    } else {
+      hdr.style.borderBottom = 'none';
+      hdr.style.backdropFilter = 'blur(0)';
+    }
+  }, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* Hero visible immediately */
+  setTimeout(() => {
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+  }, 80);
+
+  /* ── FAQ accordion ── */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn  = item.querySelector('.faq-btn');
+    const body = item.querySelector('.faq-body');
+    const icon = item.querySelector('.faq-icon');
+
+    btn.addEventListener('click', () => {
+      const open = body.classList.contains('open');
+
+      /* Close all */
+      document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = '');
+      document.querySelectorAll('.faq-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+
+      if (!open) {
+        body.classList.add('open');
+        icon.style.transform = 'rotate(180deg)';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  /* ── Screenshot carousel ── */
+  const slidesEl = document.getElementById('slides');
+  const dotsEl   = document.getElementById('dots');
+  const TOTAL     = 4;
+  let cur = 0;
+
+  /* Build dots */
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('button');
+    d.setAttribute('aria-label', `Screenshot ${i + 1}`);
+    d.dataset.i = i;
+    d.className = 'rounded-full transition-all duration-300';
+    dotsEl.appendChild(d);
+    d.addEventListener('click', () => goTo(i));
+  }
+
+  function goTo(i) {
+    cur = i;
+    slidesEl.style.transform = `translateX(-${i * 100}%)`;
+    dotsEl.querySelectorAll('button').forEach((d, idx) => {
+      if (idx === i) {
+        d.style.cssText = 'width:22px; height:10px; background:var(--primary);';
+      } else {
+        d.style.cssText = 'width:8px; height:8px; background:rgba(255,255,255,.2);';
+      }
+    });
+  }
+  goTo(0);
+
+  const ticker = setInterval(() => goTo((cur + 1) % TOTAL), 4000);
+
+  /* Touch swipe */
+  let tx = 0;
+  slidesEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  slidesEl.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) { goTo(dx < 0 ? Math.min(cur + 1, TOTAL - 1) : Math.max(cur - 1, 0)); }
+  });
+
+  /* ── Mobile CTA hide after click ── */
+  const mobCta    = document.getElementById('mob-cta');
+  const mobCtaBtn = document.getElementById('mob-cta-btn');
+
+  if (localStorage.getItem('dz_cta')) mobCta.style.display = 'none';
+
+  mobCtaBtn.addEventListener('click', () => {
+    localStorage.setItem('dz_cta', '1');
+    setTimeout(() => { mobCta.style.display = 'none'; }, 800);
+  });
+
+  /* ── Smooth scroll ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  /* ── Theme toggle ── */
+  (function () {
+    const html  = document.documentElement;
+    const btn   = document.getElementById('theme-toggle');
+    const moon  = document.getElementById('icon-moon');
+    const sun   = document.getElementById('icon-sun');
+    const mq    = window.matchMedia('(prefers-color-scheme: light)');
+    function apply(light) {
+      html.classList.toggle('light', light);
+      moon.style.display = light ? 'none' : '';
+      sun.style.display  = light ? ''     : 'none';
+    }
+    const stored = localStorage.getItem('dz-theme');
+    apply(stored ? stored === 'light' : mq.matches);
+    mq.addEventListener('change', e => {
+      if (!localStorage.getItem('dz-theme')) apply(e.matches);
+    });
+    btn.addEventListener('click', () => {
+      const isLight = !html.classList.contains('light');
+      apply(isLight);
+      localStorage.setItem('dz-theme', isLight ? 'light' : 'dark');
+    });
+  })();
+
+  /* ── Scroll progress bar ── */
+  (function () {
+    const bar = document.getElementById('scroll-progress');
+    document.addEventListener('scroll', () => {
+      const scrolled = document.documentElement.scrollTop;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+    }, { passive: true });
+  })();
+
+  /* ── Active nav link ── */
+  (function () {
+    const links    = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    function setActive(id) {
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    }
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+    }, { threshold: 0.25, rootMargin: '-64px 0px -30% 0px' });
+    sections.forEach(s => obs.observe(s));
+    links.forEach(a => a.addEventListener('click', () => setActive(a.getAttribute('href').slice(1))));
+  })();
+
+  /* ── Language switcher ── */
+  (function () {
+    const btn  = document.getElementById('lang-btn');
+    const menu = document.getElementById('lang-menu');
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = menu.style.display === 'block';
+      menu.style.display = open ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+    document.addEventListener('click', () => {
+      menu.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+    });
+    menu.addEventListener('click', e => e.stopPropagation());
+  })();
+</script>
+
+</body>
+</html>

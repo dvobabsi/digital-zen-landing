@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Localised versions
+Allow: /uk/
+Allow: /ru/
+
+Sitemap: https://digital-zen.csmpoint.com/sitemap.xml
